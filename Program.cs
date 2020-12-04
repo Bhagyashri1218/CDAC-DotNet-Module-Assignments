@@ -4,87 +4,64 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Employee
+namespace EmployeeInherit
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Emp e = new Emp("Bhagyashri", 14000, 20);
-            Emp e1 = new Emp("Bhagya", 20000);
-            Emp e2 = new Emp("Bhagyashri");
-            Emp e3 = new Emp();
 
+            Employee e1 = new Manager("Bhagyashri", 3, " manager", 2000);
+            Employee e2 = new GeneralManager("Giri", 3, "CEO","travelling allowance", 5000);
+            Employee e3 = new CEO("Bhagya", 5, 100000);
+            Console.WriteLine(e3.CalacNetSalary());
+            Console.WriteLine(e2.CalacNetSalary());
 
-            Console.WriteLine(e.PEmpno);
-            Console.WriteLine(e1.PEmpno);
-            Console.WriteLine(e2.PEmpno);
-            Console.WriteLine(e3.PEmpno);
+            Console.WriteLine(e1.CalacNetSalary());
+
             Console.ReadLine();
+
         }
     }
 
-    public class Emp
+    public abstract class Employee
     {
         private string name;
-        public string Pname
+
+        public string Name
         {
-            set
-            {
-                if (value != "")
-                {
-                    name = value;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid name");
-                    Console.ReadLine();
-                }
-            }
             get
             {
                 return name;
             }
-        }
-
-        private static int count = 0;
-        private int EmpNo = 0;
-        public int PEmpno
-        {
             set
             {
-                EmpNo = value;
-            }
-            get
-            {
-                return EmpNo;
+                name = value;
             }
         }
 
+        private static int lastEmpNo = 0;
 
-        private decimal Basic;
-        public decimal Pbasic
+        private int empNo;
+
+        public int Empno
         {
-            set
+            get { return empNo; }
+            private set
             {
-                if (value > 10000 && value < 25000)
-                {
-                    Basic = value;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid Basic");
-                    Console.ReadLine();
-                }
-            }
-            get
-            {
-                return Basic;
+                empNo = value;
             }
         }
+
         private short deptNo;
-        public short Pdept
+
+        public short DeptNo
         {
+            get
+            {
+                return deptNo;
+            }
+
             set
             {
                 if (value > 0)
@@ -93,23 +70,147 @@ namespace Employee
                 }
                 else
                 {
-                    Console.WriteLine("Invalid Dept Number");
-                    Console.ReadLine();
+                    Console.WriteLine("department number should be greater than 0");
                 }
-            }
-            get
-            {
-                return deptNo;
             }
         }
 
-        public Emp(string name = null, decimal basic =11000, short deptId = 1 )
+        public Employee(string name = "noname", short deptNo = 1, decimal basic = 0)
         {
-            Emp.count++;
-            EmpNo = Emp.count;
-            Pname = name;
-            Pbasic = basic;
-            Pdept = deptId;
+            empNo = ++lastEmpNo;
+            this.name = name;
+            this.deptNo = deptNo;
+            this.basic = basic;
+        }
+
+
+        private decimal basic;
+        public abstract decimal Basic
+        {
+            get;
+            set;
+        }
+
+        public abstract decimal CalacNetSalary();
+
+
+    }
+
+    public class Manager : Employee
+    {
+        private string designation;
+        public string Designation
+        {
+            get
+            {
+                return designation;
+            }
+            set
+            {
+                designation = value;
+            }
+        }
+
+        private decimal basic;
+        public override decimal Basic
+        {
+            get
+            {
+
+                return basic;
+            }
+            set
+            {
+
+                basic = value;
+            }
+        }
+
+        public Manager(string name, short deptNo, string designation = "manager", decimal basic = 0) : base(name, deptNo)
+        {
+
+            this.basic = basic;
+            this.designation = designation;
+
+        }
+
+
+
+        public override decimal CalacNetSalary()
+        {
+
+            return Basic;
         }
     }
+
+    public class GeneralManager : Manager
+    {
+        private string perks;
+
+        public string Perks
+        {
+            get
+            {
+                return perks;
+            }
+            set
+            {
+                perks = value;
+            }
+        }
+        private decimal basic;
+
+        public override decimal Basic
+        {
+            get
+            {
+                return basic;
+            }
+            set
+            {
+                basic = value;
+            }
+        }
+
+        public GeneralManager(string name, short deptNo, string designation, string perks, decimal basic) : base(name, deptNo, designation)
+        {
+            this.basic = basic;
+            this.perks = perks;
+        }
+
+        public override decimal CalacNetSalary()
+        {
+            return Basic;
+        }
+
+
+    }
+
+    public class CEO : Employee
+    {
+
+        private decimal basic;
+        public override decimal Basic
+        {
+            get
+            {
+                return basic;
+            }
+            set
+            {
+                basic = value;
+            }
+        }
+
+        public override sealed decimal CalacNetSalary()
+        {
+            return basic;
+        }
+
+        public CEO(string name, short deptNo, decimal basic) : base(name, deptNo)
+        {
+            this.basic = basic;
+        }
+    }
+
 }
